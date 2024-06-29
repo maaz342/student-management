@@ -105,7 +105,7 @@ const TeacherList: React.FC = () => {
                     Edit
                   </MuiButton>
                 
-                  <MuiButton variant="contained" color="secondary" onClick={() => navigate(`/allocate-class/${teacher.email}`)}
+                  <MuiButton variant="contained" color="secondary" onClick={() => navigate(`/dashboard/allocate-class/${teacher.email}`)}
 className="me-2">
           Allocate Class
         </MuiButton>

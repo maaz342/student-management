@@ -153,6 +153,11 @@ const Dashboard: React.FC = () => {
       </ListItem>
       <ListItem button component={Link} to="/dashboard/add-teacher" onClick={toggleDrawer(false)}>
         <ListItemText primary="Add Teacher" />
+        
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/list-teacher" onClick={toggleDrawer(false)}>
+        <ListItemText primary="List Teacher" />
+        
       </ListItem>
     </>
   );
