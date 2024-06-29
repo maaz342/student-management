@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, remove } from 'firebase/database';
 import { database } from '../config/firebase';
 import {
   Container,
@@ -46,6 +46,14 @@ const ExamSchedule: React.FC = () => {
   }, []);
 
   const handleDeleteExam = (id: string) => {
+    const examRef = ref(database, `exams/${id}`);
+    remove(examRef)
+      .then(() => {
+        setExams((prevExams) => prevExams.filter((exam) => exam.id !== id));
+      })
+      .catch((error) => {
+        console.error('Error removing exam: ', error);
+      });
   };
 
   return (

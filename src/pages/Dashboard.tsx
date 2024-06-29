@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import { Link } from 'react-router-dom';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   LineChart,
   Line,
@@ -12,7 +24,31 @@ import {
   BarChart,
   Bar,
 } from 'recharts';
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import {  Routes, Route, Navigate } from 'react-router-dom';
+import StudentList from '../pages/StudentList';
+import StudentForm from '../pages/StudentAdd';
+import TransferStudent from '../pages/TransferStudent';
+import TeacherAdd from '../pages/TeacherAdd';
+import TeacherList from '../pages/TeacherList';
+import ClassAllocationForm from '../pages/ClassAllocationForm';
+import SubjectForm from '../pages/SubjectAdd';
+import SubjectList from '../pages/SubjectList';
+import SyllabusForm from '../pages/SyllabusForm';
+import SyllabusList from '../pages/SyllabusDetails';
+import FeeStructure from '../pages/FeeStructure';
+import FeeStructureForm from '../pages/FeesAdd';
+import ClassAddForm from '../pages/ClassForm';
+import ClassList from '../pages/ClassList';
+import FeesVoucher from '../pages/FeesVoucher';
+import AddExam from '../pages/ExamAdd';
+import ExamSchedule from '../pages/ExamSchedule';
+import AddResultDialog from '../pages/ExamResult';
+import NavBar from '../components/Navbar';
+import Login from '../pages/LoginForm';
+import { useAuth } from '../context/AuthContext';
+import AdmissionForm from '../pages/AdmissionForm';
+import Footer from '../components/Footer';
+
 
 const data = [
   [
@@ -81,6 +117,46 @@ const Dashboard: React.FC = () => {
   const handleNext = () => {
     setActiveIndex((prevIndex) => (prevIndex === captions.length - 1 ? 0 : prevIndex + 1));
   };
+  const { isAdmin } = useAuth(); 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width:600px)'); 
+
+  const toggleDrawer = (open: boolean) => () => {
+    setIsDrawerOpen(open);
+  };
+
+  const adminDrawerRoutes = (
+    <>
+      <ListItem button component={Link} to="/dashboard/fee-voucher" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Fee Voucher" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/exam-add" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Exam Add" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/students" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Students List" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/students/add" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Add Student" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/subject-list" onClick={toggleDrawer(false)}>
+        <ListItemText primary="List Subject" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/fee-add" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Add Fees" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/subject-add" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Add Subject" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/syllabus-add" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Add Syllabus" />
+      </ListItem>
+      <ListItem button component={Link} to="/dashboard/add-teacher" onClick={toggleDrawer(false)}>
+        <ListItemText primary="Add Teacher" />
+      </ListItem>
+    </>
+  );
+
 
   useEffect(() => {
     const examsRef = ref(database, 'exams');
@@ -94,7 +170,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="container-fluid mt-3">
+/*     <div className="container-fluid mt-3">
       <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
         <ol className="carousel-indicators">
           {captions.map((_, index) => (
@@ -126,7 +202,51 @@ const Dashboard: React.FC = () => {
           <span className="carousel-control-next-icon" aria-hidden="true"></span>
           <span className="sr-only text-black">Next</span>
         </a>
-      </div>
+      </div> */
+
+<>
+
+    <AppBar position="static">
+      <Toolbar>
+      
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+       
+         
+          <Typography className='text-center' variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            School Management System
+          </Typography>
+        
+        <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+          <List>
+            <ListItem button component={Link} to="/dashboard/fee-structure" onClick={toggleDrawer(false)}>
+              <ListItemText primary="Fee Structure" />
+            </ListItem>
+            <ListItem button component={Link} to="/dashboard/syllabus-list" onClick={toggleDrawer(false)}>
+              <ListItemText primary="Syllabus List" />
+            </ListItem>
+            <ListItem button component={Link} to="/dashboard/class-list" onClick={toggleDrawer(false)}>
+              <ListItemText primary="Class List" />
+            </ListItem>
+            <ListItem button component={Link} to="/dashboard/exam-schedule" onClick={toggleDrawer(false)}>
+              <ListItemText primary="Exam Schedule" />
+            </ListItem>
+            {isAdmin && adminDrawerRoutes}
+          </List>
+        </Drawer>
+        
+      </Toolbar>
+    </AppBar>
+  
+
       <div className="row mt-3">
         <div className="col-md-6">
           <div className="card">
@@ -160,8 +280,40 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+      
+
+      <Routes>
+        <Route path="/students" element={<StudentList />} />
+        <Route path="/students/add" element={<StudentForm onSave={() => {}} />} />
+        <Route path="/students/edit/:id" element={<StudentForm onSave={() => {}} />} />
+        <Route path="/transfer-student" element={<TransferStudent />} />
+        <Route path="/subject-list" element={<SubjectList />} />
+        <Route path="/syllabus-list" element={<SyllabusList />} />
+        <Route path="/fee-structure" element={<FeeStructure />} />
+        <Route path="/fee-add" element={<FeeStructureForm />} />
+        <Route path="/class-add" element={<ClassAddForm />} />
+        <Route path="/class-list" element={<ClassList />} />
+        <Route path="/exam-schedule" element={<ExamSchedule />} />
+        <Route path="/exam-add" element={<AddExam />} />
+        <Route path="/exam-result" element={<AddResultDialog />} />
+        <Route path="/admission-form" element={<AdmissionForm />} />
+
+        {isAdmin && (
+          <>
+            <Route path="/add-teacher" element={<TeacherAdd onSave={() => {}} />} />
+            <Route path="/list-teacher" element={<TeacherList />} />
+            <Route path="/allocate-class/:email" element={<ClassAllocationForm />} />
+            <Route path="/subject-add" element={<SubjectForm onSave={() => {}} />} />
+            <Route path="/syllabus-add" element={<SyllabusForm onSave={() => {}} onClose={() => {}} />} />
+            <Route path="/fee-voucher" element={<FeesVoucher />} />
+          </>
+        )}
+
+        <Route path="/dashboard" element={<Dashboard />} />
+
+      </Routes>
+</>
+
   );
 };
-
 export default Dashboard;

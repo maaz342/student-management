@@ -99,7 +99,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student: editingStudent, onSa
 
   return (
     <div className="container mt-4">
-      <h2>Add/Edit Student</h2>
+      <h2>Add Student</h2>
       <form>
         <div className="mb-3 row">
           <label htmlFor="firstName" className="col-sm-2 col-form-label">First Name</label>

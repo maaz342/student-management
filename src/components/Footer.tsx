@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Grid, Typography, Box, Link } from '@mui/material';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const Footer: React.FC = () => {
   return (

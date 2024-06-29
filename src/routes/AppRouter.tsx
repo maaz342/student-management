@@ -26,41 +26,14 @@ import AdmissionForm from '../pages/AdmissionForm';
 import Footer from '../components/Footer';
 
 const AppRouter: React.FC = () => {
-  const { isAdmin } = useAuth();
 
   return (
     <Router>
-      <NavBar />
       <Routes>
-        <Route path="/students" element={<StudentList />} />
-        <Route path="/students/add" element={<StudentForm onSave={() => {}} />} />
-        <Route path="/students/edit/:id" element={<StudentForm onSave={() => {}} />} />
-        <Route path="/transfer-student" element={<TransferStudent />} />
-        <Route path="/subject-list" element={<SubjectList />} />
-        <Route path="/syllabus-list" element={<SyllabusList />} />
-        <Route path="/fee-structure" element={<FeeStructure />} />
-        <Route path="/fee-add" element={<FeeStructureForm />} />
-        <Route path="/class-add" element={<ClassAddForm />} />
-        <Route path="/class-list" element={<ClassList />} />
-        <Route path="/exam-schedule" element={<ExamSchedule />} />
-        <Route path="/exam-add" element={<AddExam />} />
-        <Route path="/exam-result" element={<AddResultDialog />} />
-        <Route path="/admission-form" element={<AdmissionForm />} />
-
-        {isAdmin && (
-          <>
-            <Route path="/add-teacher" element={<TeacherAdd onSave={() => {}} />} />
-            <Route path="/list-teacher" element={<TeacherList />} />
-            <Route path="/allocate-class/:email" element={<ClassAllocationForm />} />
-            <Route path="/subject-add" element={<SubjectForm onSave={() => {}} />} />
-            <Route path="/syllabus-add" element={<SyllabusForm onSave={() => {}} onClose={() => {}} />} />
-            <Route path="/fee-voucher" element={<FeesVoucher />} />
-          </>
-        )}
-
-        <Route path="/dashboard" element={<Dashboard />} />
-
+   
+        <Route path="/dashboard/*" element={<Dashboard />} />
         <Route path="/" element={<Login />} />
+
       </Routes>
       <Footer/>
     </Router>
