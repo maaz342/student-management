@@ -1,22 +1,36 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CssBaseline, Box } from '@mui/material';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/LoginForm';
 import Footer from '../components/Footer';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AppRouter: React.FC = () => {
-
   return (
-    <Router>
-      <Routes>
-   
-        <Route path="/dashboard/*" element={<Dashboard />} />
-        <Route path="/" element={<Login />} />
-
-      </Routes>
-      <Footer/>
-    </Router>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+      }}
+    >
+      <CssBaseline />
+      <Router>
+        <Box
+          component="main"
+          sx={{
+            flex: '1 0 auto',
+          }}
+        >
+          <Routes>
+            <Route path="/dashboard/*" element={<Dashboard />} />
+            <Route path="/" element={<Login />} />
+          </Routes>
+        </Box>
+        <Footer />
+      </Router>
+    </Box>
   );
 };
 

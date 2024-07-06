@@ -1,13 +1,7 @@
-
 import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
+import { getDatabase, ref, set, update } from 'firebase/database';
 
-
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDsIoUrFdyyj7OhSAc09lfRChkc3IimUho",
   authDomain: "learning-bf767.firebaseapp.com",
@@ -17,10 +11,8 @@ const firebaseConfig = {
   appId: "1:832008327658:web:fec534f7e29239de8f6293",
   measurementId: "G-WTKSKWF2M1"
 };
-
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-export { auth, database };
+export { auth, database, ref, set, update };

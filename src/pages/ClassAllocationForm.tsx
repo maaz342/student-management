@@ -7,9 +7,8 @@ import { TextField, Button as MuiButton, FormControl, InputLabel, Select, MenuIt
 const ClassAllocationForm: React.FC = () => {
   const { email } = useParams<{ email: string }>();
   const [teacher, setTeacher] = useState<any>(null);
-  const [newClass, setNewClass] = useState<number | ''>('');
-  const [newSubject, setNewSubject] = useState<string>('');
-  const [subjects, setSubjects] = useState<string[]>([]);
+  const [newClass, setNewClass] = useState<string>(''); // Use string type for class name
+  const [currentSubject, setCurrentSubject] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,12 +18,12 @@ const ClassAllocationForm: React.FC = () => {
   }, [email]);
 
   useEffect(() => {
-    if (newClass !== '') {
-      fetchSubjects(newClass);
-    } else {
-      setSubjects([]);
+    if (teacher) {
+      setCurrentSubject(teacher.subjectSpeciality || '');
+      // Set newClass to the current class of the teacher
+      setNewClass(teacher.Class || '');
     }
-  }, [newClass]);
+  }, [teacher]);
 
   const fetchTeacher = async (teacherEmail: string) => {
     const teacherPath = `teachers/${teacherEmail.replace('.', '_')}`;
@@ -43,51 +42,16 @@ const ClassAllocationForm: React.FC = () => {
     }
   };
 
-  const fetchSubjects = async (selectedClass: number) => {
-    const dbRef = ref(database, 'subjects');
-  
-    try {
-      const snapshot = await get(dbRef);
-  
-      if (snapshot.exists()) {
-        const subjectsList: string[] = [];
-  
-        snapshot.forEach((childSnapshot) => {
-          const subject = childSnapshot.val();
-          const subjectClassLevel = parseInt(subject.classLevel, 10);
-  
-          if (subjectClassLevel === selectedClass) {
-            subjectsList.push(subject.subjectName);
-          }
-        });
-  
-        setSubjects(subjectsList);
-      } else {
-        console.log('No subjects available in database');
-        setSubjects([]);
-      }
-    } catch (error) {
-      console.error('Error fetching subjects:', error);
-      setSubjects([]);
-    }
-  };
-
   const handleClassChange = (event: SelectChangeEvent<string>) => {
     const selectedClass = event.target.value;
-    setNewClass(selectedClass === '' ? '' : parseInt(selectedClass, 10)); // Ensure selectedClass is parsed correctly
-    setNewSubject(''); 
-  };
-
-  const handleSubjectChange = (event: SelectChangeEvent<string>) => {
-    setNewSubject(event.target.value);
+    setNewClass(selectedClass); // Update newClass with selected class name
   };
 
   const handleSave = async () => {
-    if (teacher) {
+    if (teacher && newClass !== '') {
       const updatedTeacher = {
         ...teacher,
-        Class: newClass.toString(), 
-        subjectSpeciality: newSubject,
+        Class: newClass, // Update Class with newClass (e.g., 'Class 2')
       };
 
       const teacherRef = ref(database, `teachers/${teacher.email.replace('.', '_')}`);
@@ -95,7 +59,7 @@ const ClassAllocationForm: React.FC = () => {
       try {
         await update(teacherRef, updatedTeacher);
         console.log('Teacher updated successfully');
-        navigate('/teacher-list');
+        navigate('/dashboard/teacher-list'); // Navigate to the teacher list
       } catch (error) {
         console.error('Error updating teacher:', error);
       }
@@ -106,7 +70,7 @@ const ClassAllocationForm: React.FC = () => {
 
   return (
     <div className="container mt-4">
-      <h2>Allocate Class and Subject</h2>
+      <h2>Allocate Class</h2>
       <form>
         <div className="mb-3 row">
           <label htmlFor="firstName" className="col-sm-2 col-form-label">First Name</label>
@@ -153,7 +117,7 @@ const ClassAllocationForm: React.FC = () => {
             <TextField
               id="currentSubject"
               name="currentSubject"
-              value={teacher.subjectSpeciality}
+              value={currentSubject}
               disabled
               fullWidth
               margin="normal"
@@ -169,38 +133,13 @@ const ClassAllocationForm: React.FC = () => {
                 labelId="newClass-label"
                 id="newClass"
                 name="newClass"
-                value={newClass === '' ? '' : newClass.toString()}
+                value={newClass}
                 onChange={handleClassChange}
               >
                 <MenuItem value="">Select Class</MenuItem>
-                <MenuItem value="1">Class 1</MenuItem>
-                <MenuItem value="2">Class 2</MenuItem>
-                <MenuItem value="3">Class 3</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-        </div>
-        <div className="mb-3 row">
-          <label htmlFor="newSubject" className="col-sm-2 col-form-label">New Subject</label>
-          <div className="col-sm-10">
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="newSubject-label">New Subject</InputLabel>
-              <Select
-                labelId="newSubject-label"
-                id="newSubject"
-                name="newSubject"
-                value={newSubject}
-                onChange={handleSubjectChange}
-              >
-                {subjects.length === 0 ? (
-                  <MenuItem disabled value="">
-                    No subjects available for this class level
-                  </MenuItem>
-                ) : (
-                  subjects.map((subject, index) => (
-                    <MenuItem key={index} value={subject}>{subject}</MenuItem>
-                  ))
-                )}
+                <MenuItem value="Class 1">Class 1</MenuItem>
+                <MenuItem value="Class 2">Class 2</MenuItem>
+                <MenuItem value="Class 3">Class 3</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -208,7 +147,7 @@ const ClassAllocationForm: React.FC = () => {
         <MuiButton variant="contained" color="primary" onClick={handleSave} className="me-2">
           Save
         </MuiButton>
-        <MuiButton variant="contained" color="secondary" onClick={() => navigate('/teacher-list')}>
+        <MuiButton variant="contained" color="secondary" onClick={() => navigate('/dashboard/list-teacher')}>
           Cancel
         </MuiButton>
       </form>

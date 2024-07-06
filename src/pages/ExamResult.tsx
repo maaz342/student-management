@@ -52,7 +52,10 @@ const AddExamResult: React.FC = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [selectedClass, setSelectedClass] = useState<string>('');
   const [subjects, setSubjects] = useState<{ id: string; name: string; }[]>([]);
-  const [selectedSubject, setSelectedSubject] = useState<string>('');
+  const [selectedSubject, setSelectedSubject] = useState<{ id: string; name: string; }>({
+    id: '',
+    name: '',
+  });
   const [students, setStudents] = useState<Student[]>([]);
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<string>('');
@@ -60,6 +63,7 @@ const AddExamResult: React.FC = () => {
   const [marks, setMarks] = useState<number>(0);
   const [maxMarks, setMaxMarks] = useState<number>(0);
   const [exams, setExams] = useState<Exam[]>([]);
+  const [examType, setExamType] = useState<string>('');
 
   useEffect(() => {
     const classesRef = ref(database, 'classes');
@@ -128,11 +132,11 @@ const AddExamResult: React.FC = () => {
     const classData = classes.find((cls) => cls.name === selectedClass);
     if (classData) {
       setSubjects(classData.subjects);
-      setSelectedSubject('');
+      setSelectedSubject({ id: '', name: '' });
       setMaxMarks(0);
     } else {
       setSubjects([]);
-      setSelectedSubject('');
+      setSelectedSubject({ id: '', name: '' });
       setMaxMarks(0);
     }
 
@@ -143,15 +147,18 @@ const AddExamResult: React.FC = () => {
 
   const handleSubjectChange = (event: SelectChangeEvent<string>) => {
     const selectedSubjectId = event.target.value;
-    setSelectedSubject(selectedSubjectId);
+    const selectedSubjectName = subjects.find((subject) => subject.id === selectedSubjectId)?.name || '';
+    setSelectedSubject({ id: selectedSubjectId, name: selectedSubjectName });
 
     const exam = exams.find(
       (exam) => exam.class === selectedClass && exam.subject === selectedSubjectId
     );
     if (exam) {
       setMaxMarks(exam.maxMarks);
+      setExamType(exam.type); // Set exam type based on selected exam
     } else {
       setMaxMarks(0);
+      setExamType('');
     }
   };
 
@@ -160,19 +167,21 @@ const AddExamResult: React.FC = () => {
     const newResultRef = push(resultRef);
     set(newResultRef, {
       class: selectedClass,
-      subject: selectedSubject,
+      subject: selectedSubject.name, // Store subject name instead of ID
       student: selectedStudent,
       result: result,
       marks: marks,
-      maxMarks: maxMarks,
+      maxMarks: examType === 'Final' ? 100 : examType === 'Midterm' ? 50 : 0, // Set max marks based on exam type
+      type: examType,
     });
 
     setSelectedClass('');
-    setSelectedSubject('');
+    setSelectedSubject({ id: '', name: '' });
     setSelectedStudent('');
     setResult('');
     setMarks(0);
     setMaxMarks(0);
+    setExamType('');
   };
 
   return (
@@ -202,7 +211,7 @@ const AddExamResult: React.FC = () => {
             <Select
               labelId="select-subject-label"
               id="select-subject"
-              value={selectedSubject}
+              value={selectedSubject.id}
               onChange={handleSubjectChange}
             >
               {subjects.map((subject, index) => (
@@ -213,7 +222,7 @@ const AddExamResult: React.FC = () => {
             </Select>
           </FormControl>
         )}
-        {selectedClass && selectedSubject && (
+        {selectedClass && selectedSubject.id && (
           <FormControl fullWidth margin="normal">
             <InputLabel id="select-student-label">Select Student</InputLabel>
             <Select
@@ -230,13 +239,30 @@ const AddExamResult: React.FC = () => {
             </Select>
           </FormControl>
         )}
-        {selectedClass && selectedSubject && selectedStudent && (
+        {selectedClass && selectedSubject.id && selectedStudent && (
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="select-examtype-label">Exam Type</InputLabel>
+            <Select
+              labelId="select-examtype-label"
+              id="select-examtype"
+              value={examType}
+              onChange={(e) => setExamType(e.target.value as string)}
+            >
+              {['Midterm', 'Final', 'Quiz', 'Assignment'].map((type, index) => (
+                <MenuItem key={index} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+        {selectedClass && selectedSubject.id && selectedStudent && examType && (
           <>
             <TextField
               fullWidth
               margin="normal"
               label="Max Marks"
-              value={maxMarks}
+              value={examType === 'Final' ? 100 : examType === 'Midterm' ? 50 : 0}
               InputProps={{
                 readOnly: true,
               }}
@@ -249,7 +275,7 @@ const AddExamResult: React.FC = () => {
               value={marks}
               onChange={(e) => {
                 const value = Number(e.target.value);
-                if (value <= maxMarks) {
+                if (value <= (examType === 'Final' ? 100 : examType === 'Midterm' ? 50 : 0)) {
                   setMarks(value);
                 }
               }}

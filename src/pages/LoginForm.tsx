@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Typography, Container, Card, CardContent, Alert } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 
 const LoginForm: React.FC = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null); 
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,48 +17,46 @@ const LoginForm: React.FC = () => {
       setError(null);
       navigate('/dashboard');
     } catch (error) {
-      if (typeof error === 'string') {
-        setError(error); 
-      } else {
-        setError('An unexpected error occurred.'); 
-      }
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred.');
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-100 mt-3">Login</button>
-        {error && <p className="text-danger mt-2">{error}</p>}
-      </form>
-    </div>
+    <Container maxWidth="sm" style={{ marginTop: '4rem' }}>
+      <Card>
+        <CardContent>
+          <Typography variant="h4" component="h2" align="center" gutterBottom>
+            Login
+          </Typography>
+          <form onSubmit={handleLogin}>
+            <TextField
+              label="Email address"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <TextField
+              label="Password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '1rem' }}>
+              Login
+            </Button>
+            {error && <Alert severity="error" style={{ marginTop: '1rem' }}>{error}</Alert>}
+          </form>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 

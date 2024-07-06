@@ -97,14 +97,8 @@ const TeacherList: React.FC = () => {
                 <TableCell>{teacher.dateOfBirth}</TableCell>
                 <TableCell>{teacher.email}</TableCell>
                 <TableCell>
-                  <MuiButton
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setSelectedTeacher(teacher)}
-                  >
-                    Edit
-                  </MuiButton>
-                
+                  
+              
                   <MuiButton variant="contained" color="secondary" onClick={() => navigate(`/dashboard/allocate-class/${teacher.email}`)}
 className="me-2">
           Allocate Class

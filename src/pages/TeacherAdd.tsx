@@ -1,7 +1,8 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Button as MuiButton } from '@mui/material';
 import { ref, set, update } from 'firebase/database';
-import { database } from '../config/firebase'; 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { database, auth } from '../config/firebase'; 
 import TextFieldComponent from '../components/TextField';
 import SelectComponent from '../components/Select';
 import DateFieldComponent from '../components/DateField';
@@ -19,7 +20,7 @@ interface Teacher {
   qualification: string;
   pastexperience: string;
   subjectSpeciality: string;
-  classLevel: string;
+  Class: string;
 }
 
 interface TeacherFormProps {
@@ -40,7 +41,7 @@ const TeacherAdd: React.FC<TeacherFormProps> = ({ teacher: editingTeacher, onSav
     qualification: '',
     pastexperience: '',
     subjectSpeciality: '',
-    classLevel: '',
+    Class: '',
   });
 
   useEffect(() => {
@@ -68,12 +69,18 @@ const TeacherAdd: React.FC<TeacherFormProps> = ({ teacher: editingTeacher, onSav
   const handleSave = async () => {
     try {
       const teacherRef = ref(database, 'teachers/' + teacher.email.replace('.', '_'));
+
+      const userCredential = await createUserWithEmailAndPassword(auth, teacher.email, teacher.password);
+      const user = userCredential.user;
+
+      const teacherData = { ...teacher, isAdmin: true }; // Set isAdmin to true
       if (editingTeacher) {
-        await update(teacherRef, teacher);
+        await update(teacherRef, teacherData);
       } else {
-        await set(teacherRef, teacher);
+        await set(teacherRef, teacherData);
       }
-      console.log('Teacher saved:', teacher);
+
+      console.log('Teacher saved:', teacherData);
       setTeacher({
         firstName: '',
         lastName: '',
@@ -86,7 +93,7 @@ const TeacherAdd: React.FC<TeacherFormProps> = ({ teacher: editingTeacher, onSav
         qualification: '',
         pastexperience: '',
         subjectSpeciality: '',
-        classLevel: '',
+        Class: '',
       });
       onSave();
     } catch (e) {
@@ -195,7 +202,7 @@ const TeacherAdd: React.FC<TeacherFormProps> = ({ teacher: editingTeacher, onSav
               id="password"
               name="password"
               label="Password"
-           value={teacher.password}
+              value={teacher.password}
               onChange={handleChange}
             />
           </div>
@@ -240,10 +247,10 @@ const TeacherAdd: React.FC<TeacherFormProps> = ({ teacher: editingTeacher, onSav
           <label htmlFor="classLevel" className="col-sm-2 col-form-label">Class Level</label>
           <div className="col-sm-10">
             <SelectComponent
-              id="classLevel"
-              name="classLevel"
+              id="Classs"
+              name="Class"
               label="Class Level"
-              value={teacher.classLevel}
+              value={teacher.Class}
               onChange={handleSelectChange}
               options={[
                 { value: '', label: 'Select Class Level' },
@@ -289,7 +296,7 @@ const TeacherAdd: React.FC<TeacherFormProps> = ({ teacher: editingTeacher, onSav
                   qualification: '',
                   pastexperience: '',
                   subjectSpeciality: '',
-                  classLevel: '',
+                  Class: '',
                 })
               }
               className="me-2"
