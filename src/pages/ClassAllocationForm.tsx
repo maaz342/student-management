@@ -44,14 +44,14 @@ const ClassAllocationForm: React.FC = () => {
 
   const handleClassChange = (event: SelectChangeEvent<string>) => {
     const selectedClass = event.target.value;
-    setNewClass(selectedClass); // Update newClass with selected class name
+    setNewClass(selectedClass);
   };
 
   const handleSave = async () => {
     if (teacher && newClass !== '') {
       const updatedTeacher = {
         ...teacher,
-        Class: newClass, // Update Class with newClass (e.g., 'Class 2')
+        Class: newClass, 
       };
 
       const teacherRef = ref(database, `teachers/${teacher.email.replace('.', '_')}`);
