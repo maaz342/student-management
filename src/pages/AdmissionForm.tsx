@@ -74,7 +74,6 @@ const AdmissionForm: React.FC = () => {
     try {
       await addStudent(student);
       setError(null);
-      navigate('/students');
     } catch (error) {
       setError('An error occurred while adding the student.');
     }

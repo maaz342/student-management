@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link,Routes,Route } from 'react-router-dom';
 import { TextField, Button, Typography, Container, Card, CardContent, Alert } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
+import AdmissionForm from './AdmissionForm';
 
 const LoginForm: React.FC = () => {
   const { login } = useAuth();
@@ -22,6 +23,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
+   
     <Container maxWidth="sm" style={{ marginTop: '4rem' }}>
       <Card>
         <CardContent>
@@ -54,9 +56,16 @@ const LoginForm: React.FC = () => {
             </Button>
             {error && <Alert severity="error" style={{ marginTop: '1rem' }}>{error}</Alert>}
           </form>
+   
+
+          <Typography variant="body2" align="center" style={{ marginTop: '1rem' }}>
+            Don't have an account? <Link to="/admission-form">Apply For Admission</Link>
+          </Typography>
         </CardContent>
       </Card>
+  
     </Container>
+    
   );
 };
 

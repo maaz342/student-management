@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import Login from '../pages/LoginForm';
 import Footer from '../components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AdmissionForm from '../pages/AdmissionForm';
 
 const AppRouter: React.FC = () => {
   return (
@@ -26,6 +27,8 @@ const AppRouter: React.FC = () => {
           <Routes>
             <Route path="/dashboard/*" element={<Dashboard />} />
             <Route path="/" element={<Login />} />
+            <Route path="/admission-form" element={<AdmissionForm />} />
+
           </Routes>
         </Box>
         <Footer />

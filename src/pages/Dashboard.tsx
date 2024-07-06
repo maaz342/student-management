@@ -203,6 +203,10 @@ const Dashboard: React.FC = () => {
           </ListItem>
           <ListItem button component={Link} to="/dashboard/syllabus-list" onClick={toggleDrawer(false)}>
             <ListItemText primary="Syllabus List" />
+         
+          </ListItem>
+          <ListItem button component={Link} to="/dashboard/admission-form" onClick={toggleDrawer(false)}>
+          <ListItemText primary="Admission Form" />
           </ListItem>
           {isAdmin && adminDrawerRoutes}
         </List>
@@ -292,9 +296,9 @@ const Dashboard: React.FC = () => {
         <Route path="/exam-schedule" element={<ExamSchedule />} />
         <Route path="/exam-add" element={<AddExam />} />
         <Route path="/exam-result" element={<AddResultDialog />} />
-        <Route path="/admission-form" element={<AdmissionForm />} />
         <Route path="/transfer-student" element={<TransferStudent />} />
 
+        <Route path="/admission-form" element={<AdmissionForm />} />
 
         {isAdmin && (
           <>
@@ -308,7 +312,10 @@ const Dashboard: React.FC = () => {
         )}
 
         <Route path="/dashboard" element={<Dashboard />} />
+
       </Routes>
+      <Routes>
+  </Routes>
       <Outlet />
     </>
   );
