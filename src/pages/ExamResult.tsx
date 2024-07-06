@@ -155,7 +155,7 @@ const AddExamResult: React.FC = () => {
     );
     if (exam) {
       setMaxMarks(exam.maxMarks);
-      setExamType(exam.type); // Set exam type based on selected exam
+      setExamType(exam.type); 
     } else {
       setMaxMarks(0);
       setExamType('');
@@ -167,11 +167,11 @@ const AddExamResult: React.FC = () => {
     const newResultRef = push(resultRef);
     set(newResultRef, {
       class: selectedClass,
-      subject: selectedSubject.name, // Store subject name instead of ID
+      subject: selectedSubject.name, 
       student: selectedStudent,
       result: result,
       marks: marks,
-      maxMarks: examType === 'Final' ? 100 : examType === 'Midterm' ? 50 : 0, // Set max marks based on exam type
+      maxMarks: examType === 'Final' ? 100 : examType === 'Midterm' ? 50 : 0, 
       type: examType,
     });
 

@@ -58,7 +58,7 @@ const ClassAllocationForm: React.FC = () => {
       try {
         await update(teacherRef, updatedTeacher);
         console.log('Teacher updated successfully');
-        navigate('/dashboard/teacher-list'); // Navigate to the teacher list
+        navigate('/dashboard/teacher-list'); 
       } catch (error) {
         console.error('Error updating teacher:', error);
       }

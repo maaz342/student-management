@@ -149,15 +149,13 @@ const Dashboard: React.FC = () => {
     });
 
     return () => {
-      loadExams(); // Unsubscribe from the Firebase listener when component unmounts
+      loadExams();
     };
   }, []);
 
   useEffect(() => {
-    // Reset charts or any other data when activeIndex changes
-    // For example, reset `exams` state here if needed
+
     return () => {
-      // Cleanup any data or state
     };
   }, [activeIndex]);
 
