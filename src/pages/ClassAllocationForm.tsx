@@ -20,7 +20,6 @@ const ClassAllocationForm: React.FC = () => {
   useEffect(() => {
     if (teacher) {
       setCurrentSubject(teacher.subjectSpeciality || '');
-      // Set newClass to the current class of the teacher
       setNewClass(teacher.Class || '');
     }
   }, [teacher]);
